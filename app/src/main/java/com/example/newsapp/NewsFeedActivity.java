@@ -3,15 +3,23 @@ package com.example.newsapp;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewsFeedActivity extends AppCompatActivity {
-    private TextView tvNews;
+    private RecyclerView recyclerView;
+    private NewsAdapter newsAdapter;
+    private List<NewsItem> newsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +27,11 @@ public class NewsFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_feed);
 
-        tvNews = findViewById(R.id.tvNews);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        newsList = new ArrayList<>();
 
         String API_ENDPOINT = "https://newsdata.io/api/1/news?" +
                 "country=in&" +
@@ -40,17 +52,27 @@ public class NewsFeedActivity extends AppCompatActivity {
         protected void onPostExecute(String jsonResponse) {
             if (jsonResponse != null) {
                 try {
+
                     JSONObject apiResponse = new JSONObject(jsonResponse);
                     JSONArray jsonArray = apiResponse.getJSONArray("results");
-                    StringBuilder newsBuilder = new StringBuilder();
+
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject newsObject = jsonArray.getJSONObject(i);
+
                         String title = newsObject.getString("title");
-                        newsBuilder.append("Title: ").append(title).append("\n");
+                        String description = newsObject.getString("description");
+                        String link = newsObject.getString("link");
+                        String image_url = newsObject.getString("image_url");
+
+                        newsList.add(new NewsItem(title, description, link, image_url));
                     }
-                    tvNews.setText(newsBuilder.toString());
+
+                    newsAdapter = new NewsAdapter(newsList);
+                    recyclerView.setAdapter(newsAdapter);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(NewsFeedActivity.this, "Error fetching data", Toast.LENGTH_SHORT).show();
                 }
             }
         }
