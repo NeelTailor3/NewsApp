@@ -1,8 +1,10 @@
 package com.example.newsapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +44,13 @@ public class NewsFeedActivity extends AppCompatActivity {
         new FetchNewsTask().execute(API_ENDPOINT);
     }
 
+    public void onReadMoreClick(View view) {
+        String url = "https://www.example.com"; // Replace with your URL
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
     private class FetchNewsTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -67,7 +76,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                         newsList.add(new NewsItem(title, description, link, image_url));
                     }
 
-                    newsAdapter = new NewsAdapter(newsList);
+                    newsAdapter = new NewsAdapter(NewsFeedActivity.this, newsList);
                     recyclerView.setAdapter(newsAdapter);
 
                 } catch (JSONException e) {

@@ -18,33 +18,35 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Title"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="Title" />
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:layout_marginTop="4dp"
-            android:text="Description" />
+            android:text="Description"
+            android:textSize="14sp" />
 
-        <TextView
+        <Button
             android:id="@+id/tvLink"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:layout_height="38dp"
             android:layout_marginTop="4dp"
-            android:text="Read More" />
+            android:onClick="onReadMoreClick"
+            android:text="Read More"
+            android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tvImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:text="Image" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
