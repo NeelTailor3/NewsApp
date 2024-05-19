@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,20 @@ public class NewsFeedActivity extends AppCompatActivity {
                 "apikey=" + getString(R.string.newsdataio_apikey);
 
         new FetchNewsTask().execute(API_ENDPOINT);
+
+        FloatingActionButton fab = findViewById(R.id.floating_action_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
+                sessionManager.logoutUser();
+
+                Intent intent = new Intent(NewsFeedActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                Toast.makeText(NewsFeedActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void onReadMoreClick(View view) {
