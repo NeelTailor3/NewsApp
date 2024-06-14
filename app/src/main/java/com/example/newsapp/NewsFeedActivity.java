@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -31,6 +34,27 @@ public class NewsFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_feed);
 
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        topAppBar.setOnMenuItemClickListener(new MaterialToolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                if(item.getItemId() == R.id.action_category) {
+                    Toast.makeText(NewsFeedActivity.this, "Category clicked", Toast.LENGTH_SHORT).show();
+                } else if(item.getItemId() == R.id.action_saved) {
+                    Toast.makeText(NewsFeedActivity.this, "Saved clicked", Toast.LENGTH_SHORT).show();
+                } else if(item.getItemId() == R.id.action_logout) {
+                    UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
+                    sessionManager.logoutUser();
+
+                    Intent intent = new Intent(NewsFeedActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                    Toast.makeText(NewsFeedActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -44,20 +68,6 @@ public class NewsFeedActivity extends AppCompatActivity {
                 "apikey=" + getString(R.string.newsdataio_apikey);
 
         new FetchNewsTask().execute(API_ENDPOINT);
-
-        FloatingActionButton fab = findViewById(R.id.floating_action_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
-                sessionManager.logoutUser();
-
-                Intent intent = new Intent(NewsFeedActivity.this, MainActivity.class);
-                startActivity(intent);
-
-                Toast.makeText(NewsFeedActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void onReadMoreClick(View view) {
