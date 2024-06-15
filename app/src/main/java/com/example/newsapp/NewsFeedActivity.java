@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ public class NewsFeedActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NewsAdapter newsAdapter;
     private List<NewsItem> newsList;
+    private ProgressBar loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         setContentView(R.layout.news_feed);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        loader = findViewById(R.id.newsFeedLoader);
         topAppBar.setOnMenuItemClickListener(new MaterialToolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
@@ -65,11 +68,15 @@ public class NewsFeedActivity extends AppCompatActivity {
     }
 
     private void loadData(String selectedCategories) {
+        loader.setVisibility(View.VISIBLE);
         String API_ENDPOINT = "https://newsdata.io/api/1/news?" +
                 "country=in&" +
                 "language=en&" +
-                "apikey=" + getString(R.string.newsdataio_apikey) + "&" +
-                "category=" + selectedCategories;
+                "apikey=" + getString(R.string.newsdataio_apikey);
+
+        if(!selectedCategories.equals("")) {
+           API_ENDPOINT += "&category=" + selectedCategories;
+        }
 
         new FetchNewsTask().execute(API_ENDPOINT);
     }
@@ -130,7 +137,7 @@ public class NewsFeedActivity extends AppCompatActivity {
 
                     newsAdapter = new NewsAdapter(NewsFeedActivity.this, newsList);
                     recyclerView.setAdapter(newsAdapter);
-
+                    loader.setVisibility(View.INVISIBLE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(NewsFeedActivity.this, "Error fetching data", Toast.LENGTH_SHORT).show();
