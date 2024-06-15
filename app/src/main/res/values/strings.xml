@@ -3,11 +3,11 @@
     <string name="sign_up">Sign Up</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
-    <string name="username">Username</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign In</string>
     <string name="news_feed">News Feed</string>
     <string name="welcome_to_newsapp">Welcome to NewsApp</string>
     <string name="newsdataio_apikey">pub_44486cf8e6b61ef74dce3285f548b6df85175</string>
     <string name="fab_content_desc">Log Out</string>
+    <string name="email">Email</string>
 </resources>

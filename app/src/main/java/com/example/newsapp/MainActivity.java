@@ -11,28 +11,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String username = "";
+        String email = "";
         UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
 
         if(sessionManager.isLoggedIn()) {
-            username = sessionManager.getUsername();
+            email = sessionManager.getEmail();
         }
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        String finalUsername = username;
+        String finalEmail = email;
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(finalUsername.isEmpty()) {
+                if(finalEmail.isEmpty()) {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     Intent intent = new Intent(MainActivity.this, NewsFeedActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }
         }, 3000);

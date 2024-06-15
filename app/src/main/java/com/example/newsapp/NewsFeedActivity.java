@@ -95,7 +95,6 @@ public class NewsFeedActivity extends AppCompatActivity {
                 }
                 loadData(selected);
             }
-
         });
     }
 
@@ -105,7 +104,7 @@ public class NewsFeedActivity extends AppCompatActivity {
 
         Intent intent = new Intent(NewsFeedActivity.this, MainActivity.class);
         startActivity(intent);
-
+        finish();
         Toast.makeText(NewsFeedActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
     }
 
@@ -145,5 +144,4 @@ public class NewsFeedActivity extends AppCompatActivity {
             }
         }
     }
-
 }

@@ -11,13 +11,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_USERS = "users";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_EMAIL = "email";
     public static final String COLUMN_PASSWORD = "password";
 
     private static final String TABLE_CREATE =
             "CREATE TABLE " + TABLE_USERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_USERNAME + " TEXT, " +
+                    COLUMN_EMAIL + " TEXT, " +
                     COLUMN_PASSWORD + " TEXT);";
 
     public DatabaseHelper(Context context) {
