@@ -38,31 +38,11 @@ public class NewsFeedActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.action_category) {
-                    CategoryBottomSheetDialogFragment bottomSheet = new CategoryBottomSheetDialogFragment();
-                    bottomSheet.showNow(getSupportFragmentManager(), "CategoryBottomSheetDialogFragment");
-
-                    bottomSheet.setOnDismissListener(new CategoryBottomSheetDialogFragment.OnDismissListener() {
-                        @Override
-                        public void onDismiss(List<CategoryItemDataModel> selectedItems) {
-                            // Handle selected items
-                            String selected = "";
-                            for (CategoryItemDataModel item : selectedItems) {
-                                selected += item.getName() + ",";
-                            }
-                            loadData(selected);
-                        }
-
-                    });
+                    onCategoryMenuItemClicked();
                 } else if (item.getItemId() == R.id.action_saved) {
                     Toast.makeText(NewsFeedActivity.this, "Saved clicked", Toast.LENGTH_SHORT).show();
                 } else if (item.getItemId() == R.id.action_logout) {
-                    UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
-                    sessionManager.logoutUser();
-
-                    Intent intent = new Intent(NewsFeedActivity.this, MainActivity.class);
-                    startActivity(intent);
-
-                    Toast.makeText(NewsFeedActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
+                    onLogoutButtonClicked();
                 }
                 return false;
             }
@@ -92,6 +72,34 @@ public class NewsFeedActivity extends AppCompatActivity {
                 "category=" + selectedCategories;
 
         new FetchNewsTask().execute(API_ENDPOINT);
+    }
+
+    private void onCategoryMenuItemClicked() {
+        CategoryBottomSheetDialogFragment bottomSheet = new CategoryBottomSheetDialogFragment();
+        bottomSheet.showNow(getSupportFragmentManager(), "CategoryBottomSheetDialogFragment");
+
+        bottomSheet.setOnDismissListener(new CategoryBottomSheetDialogFragment.OnDismissListener() {
+            @Override
+            public void onDismiss(List<CategoryItemDataModel> selectedItems) {
+                // Handle selected items
+                String selected = "";
+                for (CategoryItemDataModel item : selectedItems) {
+                    selected += item.getName() + ",";
+                }
+                loadData(selected);
+            }
+
+        });
+    }
+
+    private void onLogoutButtonClicked() {
+        UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
+        sessionManager.logoutUser();
+
+        Intent intent = new Intent(NewsFeedActivity.this, MainActivity.class);
+        startActivity(intent);
+
+        Toast.makeText(NewsFeedActivity.this, "Successfully Logged Out", Toast.LENGTH_SHORT).show();
     }
 
     private class FetchNewsTask extends AsyncTask<String, Void, String> {
