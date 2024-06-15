@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,11 +37,25 @@ public class NewsFeedActivity extends AppCompatActivity {
         topAppBar.setOnMenuItemClickListener(new MaterialToolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
-                if(item.getItemId() == R.id.action_category) {
-                    Toast.makeText(NewsFeedActivity.this, "Category clicked", Toast.LENGTH_SHORT).show();
-                } else if(item.getItemId() == R.id.action_saved) {
+                if (item.getItemId() == R.id.action_category) {
+                    CategoryBottomSheetDialogFragment bottomSheet = new CategoryBottomSheetDialogFragment();
+                    bottomSheet.showNow(getSupportFragmentManager(), "CategoryBottomSheetDialogFragment");
+
+                    bottomSheet.setOnDismissListener(new CategoryBottomSheetDialogFragment.OnDismissListener() {
+                        @Override
+                        public void onDismiss(List<CategoryItemDataModel> selectedItems) {
+                            // Handle selected items
+                            String selected = "";
+                            for (CategoryItemDataModel item : selectedItems) {
+                                selected += item.getName() + ",";
+                            }
+                            loadData(selected);
+                        }
+
+                    });
+                } else if (item.getItemId() == R.id.action_saved) {
                     Toast.makeText(NewsFeedActivity.this, "Saved clicked", Toast.LENGTH_SHORT).show();
-                } else if(item.getItemId() == R.id.action_logout) {
+                } else if (item.getItemId() == R.id.action_logout) {
                     UserSessionManager sessionManager = new UserSessionManager(getApplicationContext());
                     sessionManager.logoutUser();
 
@@ -61,13 +74,7 @@ public class NewsFeedActivity extends AppCompatActivity {
 
         newsList = new ArrayList<>();
 
-        String API_ENDPOINT = "https://newsdata.io/api/1/news?" +
-                "country=in&" +
-                "language=en&" +
-                "category=education,environment,science,technology,world&" +
-                "apikey=" + getString(R.string.newsdataio_apikey);
-
-        new FetchNewsTask().execute(API_ENDPOINT);
+        loadData("");
     }
 
     public void onReadMoreClick(View view) {
@@ -75,6 +82,16 @@ public class NewsFeedActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
+    }
+
+    private void loadData(String selectedCategories) {
+        String API_ENDPOINT = "https://newsdata.io/api/1/news?" +
+                "country=in&" +
+                "language=en&" +
+                "apikey=" + getString(R.string.newsdataio_apikey) + "&" +
+                "category=" + selectedCategories;
+
+        new FetchNewsTask().execute(API_ENDPOINT);
     }
 
     private class FetchNewsTask extends AsyncTask<String, Void, String> {
@@ -87,6 +104,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         protected void onPostExecute(String jsonResponse) {
             if (jsonResponse != null) {
                 try {
+                    newsList.clear();
 
                     JSONObject apiResponse = new JSONObject(jsonResponse);
                     JSONArray jsonArray = apiResponse.getJSONArray("results");
