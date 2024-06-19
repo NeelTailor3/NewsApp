@@ -29,8 +29,6 @@ public class CategoryItemAdapter extends ArrayAdapter<CategoryItemDataModel> {
         checkBox.setText(item.getName());
         checkBox.setChecked(item.isSelected());
 
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> item.setSelected(isChecked));
-
         return convertView;
     }
 

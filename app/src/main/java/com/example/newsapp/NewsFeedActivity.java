@@ -1,6 +1,8 @@
 package com.example.newsapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewsFeedActivity extends AppCompatActivity {
+    private static final String PREF_NAME = "SelectedCategory";
     private RecyclerView recyclerView;
     private NewsAdapter newsAdapter;
     private List<NewsItem> newsList;
@@ -69,13 +72,10 @@ public class NewsFeedActivity extends AppCompatActivity {
 
     private void loadData(String selectedCategories) {
         loader.setVisibility(View.VISIBLE);
-        String API_ENDPOINT = "https://newsdata.io/api/1/news?" +
-                "country=in&" +
-                "language=en&" +
-                "apikey=" + getString(R.string.newsdataio_apikey);
+        String API_ENDPOINT = "https://newsdata.io/api/1/news?" + "country=in&" + "language=en&" + "apikey=" + getString(R.string.newsdataio_apikey);
 
-        if(!selectedCategories.equals("")) {
-           API_ENDPOINT += "&category=" + selectedCategories;
+        if (!selectedCategories.equals("")) {
+            API_ENDPOINT += "&category=" + selectedCategories;
         }
 
         new FetchNewsTask().execute(API_ENDPOINT);
@@ -91,11 +91,19 @@ public class NewsFeedActivity extends AppCompatActivity {
                 // Handle selected items
                 String selected = "";
                 for (CategoryItemDataModel item : selectedItems) {
-                    selected += item.getName() + ",";
+                    selected += item.getValue() + ",";
                 }
+                saveSelectedCategories(selected);
                 loadData(selected);
             }
         });
+    }
+
+    private void saveSelectedCategories(String categories) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("selected_categories", categories);
+        editor.apply();
     }
 
     private void onLogoutButtonClicked() {
